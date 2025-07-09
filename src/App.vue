@@ -2,10 +2,12 @@
   <div id="app">
     <img src="./assets/ZapatayeSinFondo.png" alt="Logo" class="logo-fixed" />
     <router-view />
+    <Footer />
   </div>
 </template>
 
 <script setup>
+import Footer from './components/ui/Footer.vue'
 // El componente App ahora solo maneja el router
 </script>
 
