@@ -1,6 +1,6 @@
 <template>
   <footer class="footer-app">
-    Creado por Matias Gonzalez Autelli
+    Zapataye FC - #25AñosDeHistoria
   </footer>
 </template>
 

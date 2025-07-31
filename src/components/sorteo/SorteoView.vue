@@ -2,14 +2,7 @@
   <div class="sorteo-container">
     <!-- Botón Volver al Inicio -->
     <div class="flex justify-end mb-4">
-      <Button variant="outline" @click="volverInicio">
-        <template #icon-left>
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-          </svg>
-        </template>
-        Volver al inicio
-      </Button>
+      
     </div>
     <!-- Header del Sorteo -->
     <div class="sorteo-header">
@@ -77,9 +70,32 @@
           <div v-if="proximoPremio" class="mb-6">
             <p class="text-sm text-gray-900 mb-2">Próximo premio a sortear:</p>
             <div class="bg-white rounded-lg p-4 shadow-md">
-              <h3 class="font-semibold text-lg text-gray-900">{{ proximoPremio.nombre }}</h3>
-              <p class="text-gray-900">{{ proximoPremio.descripcion }}</p>
-              
+              <div class="flex items-center">
+                <!-- Imagen del Próximo Premio -->
+                <div class="flex-shrink-0 mr-4">
+                  <div class="w-24 h-24 rounded-lg overflow-hidden shadow-md premio-imagen bg-gradient-to-br from-gray-200 to-gray-300">
+                    <img 
+                      v-if="proximoPremio.imagen" 
+                      :src="proximoPremio.imagen" 
+                      :alt="proximoPremio.nombre"
+                      class="w-full h-full object-contain transition-opacity duration-300"
+                      @error="handleImageError"
+                      @load="handleImageLoad"
+                    />
+                    <div v-if="!proximoPremio.imagen || imagenError" class="w-full h-full flex items-center justify-center">
+                      <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Información del Próximo Premio -->
+                <div class="flex-1">
+                  <h3 class="font-semibold text-lg text-gray-900">{{ proximoPremio.nombre }}</h3>
+                  <p class="text-gray-900">{{ proximoPremio.descripcion }}</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -92,12 +108,12 @@
           >
             Reiniciar Todo
           </Button>
-          <Button 
-            variant="primary" 
-            size="lg"
-            :disabled="!puedeIniciarSorteo"
-            @click="iniciarSorteo"
-          >
+                     <Button 
+             variant="primary" 
+             size="lg"
+             :disabled="!puedeIniciarSorteo"
+             @click="handleIniciarSorteo"
+           >
             <template #icon-left>
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -126,11 +142,33 @@
         <!-- Premio Actual -->
         <div class="premio-actual mb-8">
           <Card variant="elevated" padding="lg">
-            <div class="text-center">
-              <h2 class="text-2xl font-bold text-gray-900 mb-4">Sorteando Premio</h2>
-              <div class="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl p-6 mb-6">
-                <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ premioActual?.nombre || proximoPremio?.nombre || 'Premio a sortear' }}</h3>
-                <p class="text-gray-900 mb-3">{{ premioActual?.descripcion || proximoPremio?.descripcion }}</p>
+            <div class="flex items-center justify-center">
+              <!-- Imagen del Premio -->
+              <div class="flex-shrink-0 mr-8">
+                <div class="w-60 h-60 rounded-xl overflow-hidden shadow-lg premio-imagen bg-gradient-to-br from-gray-200 to-gray-300">
+                  <img 
+                    v-if="(premioActual?.imagen || proximoPremio?.imagen) && !imagenError" 
+                    :src="premioActual?.imagen || proximoPremio?.imagen" 
+                    :alt="premioActual?.nombre || proximoPremio?.nombre"
+                    class="w-full h-full object-contain transition-opacity duration-300"
+                    @error="handleImageError"
+                    @load="handleImageLoad"
+                  />
+                  <div v-if="!premioActual?.imagen && !proximoPremio?.imagen || imagenError" class="w-full h-full flex items-center justify-center">
+                    <svg class="w-24 h-24 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Información del Premio -->
+              <div class="text-center flex-1">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Sorteando Premio</h2>
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl p-6 mb-6">
+                  <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ premioActual?.nombre || proximoPremio?.nombre || 'Premio a sortear' }}</h3>
+                  <p class="text-gray-900 mb-3">{{ premioActual?.descripcion || proximoPremio?.descripcion }}</p>
+                </div>
               </div>
             </div>
           </Card>
@@ -171,19 +209,6 @@
             >
               Cancelar
             </Button>
-            <Button 
-              variant="primary" 
-              size="lg"
-              :loading="estaSorteando"
-              @click="realizarSorteoConAnimacion"
-            >
-              <template #icon-left>
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                </svg>
-              </template>
-              Realizar Sorteo
-            </Button>
           </div>
         </div>
       </div>
@@ -198,16 +223,33 @@
             <!-- Premio Ganado -->
             <div class="premio-ganado mb-8">
               <Card variant="elevated" padding="lg">
-                <div class="text-center">
-                  <div class="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center">
-                    <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
+                <div class="flex items-center justify-center">
+                  <!-- Imagen del Premio Ganado -->
+                  <div class="flex-shrink-0 mr-8">
+                    <div class="w-48 h-48 rounded-xl overflow-hidden shadow-lg premio-imagen bg-gradient-to-br from-green-500 to-emerald-600">
+                      <img 
+                        v-if="sorteoStore.premioActual?.imagen && !imagenError" 
+                        :src="sorteoStore.premioActual.imagen" 
+                        :alt="sorteoStore.premioActual.nombre"
+                        class="w-full h-full object-contain transition-opacity duration-300"
+                        @error="handleImageError"
+                        @load="handleImageLoad"
+                      />
+                      <div v-if="!sorteoStore.premioActual?.imagen || imagenError" class="w-full h-full flex items-center justify-center">
+                        <svg class="w-24 h-24 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                      </div>
+                    </div>
                   </div>
-                  <h2 class="text-2xl font-bold text-gray-900 mb-4">¡Premio Ganado!</h2>
-                  <div class="bg-gradient-to-br from-green-50 to-emerald-100 rounded-xl p-6 mb-6">
-                    <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ sorteoStore.premioActual?.nombre || 'Premio a sortear' }}</h3>
-                    <p class="text-gray-900 mb-3">{{ sorteoStore.premioActual?.descripcion }}</p>
+                  
+                  <!-- Información del Premio Ganado -->
+                  <div class="text-center flex-1">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">¡Premio Ganado!</h2>
+                    <div class="bg-gradient-to-br from-green-50 to-emerald-100 rounded-xl p-6 mb-6">
+                      <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ sorteoStore.premioActual?.nombre || 'Premio a sortear' }}</h3>
+                      <p class="text-gray-900 mb-3">{{ sorteoStore.premioActual?.descripcion }}</p>
+                    </div>
                   </div>
                 </div>
               </Card>
@@ -259,7 +301,7 @@
             </svg>
           </div>
           <h2 class="text-2xl font-bold text-gray-900 mb-2">¡Sorteo Completado!</h2>
-          <p class="text-gray-600 mb-6">Todos los premios han sido sorteados</p>
+          <h3 class="text-gray-600 mb-6">Gracias por participar y ayudar a Zapataye. #25AñosDeHistoria</h3  >
         </div>
 
         <div class="flex justify-center space-x-4">
@@ -269,12 +311,14 @@
           >
             Exportar Resultados
           </Button>
-          <Button 
-            variant="primary" 
-            @click="reiniciarSorteo"
-          >
-            Nuevo Sorteo
-          </Button>
+          <Button variant="outline" @click="volverInicio">
+        <template #icon-left>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>
+        </template>
+        Volver al inicio
+      </Button>
         </div>
       </div>
     </div>
@@ -321,10 +365,14 @@ const {
   estaSorteando
 } = useSorteo()
 
+// Obtener el premio actual del store
+const premioActual = computed(() => sorteoStore.premioActual)
+
 const { confetti, celebracion, stopAll } = useAnimations()
 
 // Estado local
 const confetiContainer = ref(null)
+const imagenError = ref(false)
 
 // Computed
 const estadisticas = computed(() => obtenerEstadisticas())
@@ -520,18 +568,38 @@ watch(
 )
 
 // Métodos
-const handleIniciarSorteo = async () => {
-  await iniciarSorteo()
-  numerosMostrados.value = []
-  numeroActual.value = null
+const handleImageError = (event) => {
+  console.warn('Error al cargar imagen:', event.target.src)
+  imagenError.value = true
 }
 
-const handleRealizarSorteo = async () => {
-  const resultado = await realizarSorteoConAnimacion()
-  if (resultado?.success && confetiContainer.value) {
-    confetti(confetiContainer.value)
+const handleImageLoad = (event) => {
+  imagenError.value = false
+}
+
+const handleIniciarSorteo = async () => {
+  try {
+    await iniciarSorteo()
+    numerosMostrados.value = []
+    numeroActual.value = null
+    
+    // Automáticamente ejecutar la animación después de iniciar
+    setTimeout(async () => {
+      try {
+        const resultado = await realizarSorteoConAnimacion()
+        if (resultado?.success && confetiContainer.value) {
+          confetti(confetiContainer.value)
+        }
+      } catch (error) {
+        console.error('Error en la animación:', error)
+      }
+    }, 500) // Pequeña pausa para que se vea el estado "preparando"
+  } catch (error) {
+    console.error('Error al iniciar sorteo:', error)
   }
 }
+
+
 
 const handleContinuarSorteo = async () => {
   await continuarSorteo()
@@ -603,10 +671,15 @@ onUnmounted(() => { stopAll() })
 
 .celebracion-container {
   @apply relative;
+  position: relative;
+  z-index: 1; /* Asegurar que el contenedor esté por encima del contenido normal */
 }
 
 .confeti-container {
   @apply absolute inset-0 pointer-events-none;
+  z-index: 9999; /* Asegurar que esté por encima de todo */
+  max-height: 100vh; /* Limitar la altura máxima al viewport */
+  overflow: hidden; /* Evitar que el confeti se salga del contenedor */
 }
 
 .premio-ganado {
@@ -626,6 +699,54 @@ onUnmounted(() => { stopAll() })
   }
   60% {
     transform: translateY(-5px);
+  }
+}
+
+/* Estilos para las imágenes de premios */
+.premio-imagen {
+  @apply transition-all duration-300 hover:scale-105;
+  position: relative;
+}
+
+.premio-imagen img {
+  @apply transition-opacity duration-300;
+  backface-visibility: hidden;
+}
+
+.premio-imagen img:hover {
+  @apply opacity-90;
+}
+
+/* Mejorar la calidad de las imágenes */
+.premio-imagen img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Responsive para las imágenes */
+@media (max-width: 768px) {
+  .premio-actual .flex {
+    @apply flex-col;
+  }
+  
+  .premio-actual .flex-shrink-0 {
+    @apply mr-0 mb-4;
+  }
+  
+  .premio-actual .w-48 {
+    @apply w-32 h-32;
+  }
+  
+  .premio-ganado .flex {
+    @apply flex-col;
+  }
+  
+  .premio-ganado .flex-shrink-0 {
+    @apply mr-0 mb-4;
+  }
+  
+  .premio-ganado .w-48 {
+    @apply w-32 h-32;
   }
 }
 </style> 

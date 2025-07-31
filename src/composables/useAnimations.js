@@ -196,12 +196,13 @@ export function useAnimations() {
       piece.style.borderRadius = '50%'
       piece.style.left = Math.random() * 100 + '%'
       piece.style.top = '-10px'
+      piece.style.pointerEvents = 'none' // Evitar interferencias con clics
       container.appendChild(piece)
       pieces.push(piece)
     }
 
     const anim = gsap.to(pieces, {
-      y: '100vh',
+      y: container.offsetHeight + 50, // Usar la altura del contenedor + margen
       rotation: 360,
       duration,
       stagger: 0.02,

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.50.3",
+    "crypto-js": "^4.2.0",
     "firebase": "^11.10.0",
     "gsap": "^3.13.0",
     "html2pdf.js": "^0.10.3",

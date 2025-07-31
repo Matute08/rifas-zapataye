@@ -40,11 +40,18 @@
           <!-- Checkbox individual -->
           <input type="checkbox" :value="premio.id" v-model="seleccionados" class="mr-2" />
           <!-- Imagen del Premio -->
-          <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center">
-            <svg v-if="!premio.imagen" class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center overflow-hidden premio-imagen">
+                                <img 
+                      v-if="premio.imagen && !imagenesError[premio.id]" 
+                      :src="premio.imagen" 
+                      :alt="premio.nombre"
+                      class="w-full h-full object-contain transition-opacity duration-300"
+                      @error="handleImageError(premio.id)"
+                      @load="handleImageLoad(premio.id)"
+                    />
+            <svg v-if="!premio.imagen || imagenesError[premio.id]" class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
             </svg>
-            <img v-else :src="premio.imagen" :alt="premio.nombre" class="w-full h-full object-cover rounded-lg" />
           </div>
           
           <!-- Información -->
@@ -187,7 +194,21 @@
         </div>
         <div v-if="editForm.imagen || editImagenPreview" class="flex flex-col items-center">
           <label class="block text-sm font-medium text-gray-700">Imagen actual</label>
-          <img :src="editImagenPreview || editForm.imagen" alt="Imagen Premio" class="w-32 h-32 object-cover rounded-lg border mb-2" />
+          <div class="w-32 h-32 bg-gradient-to-br from-gray-200 to-gray-300 rounded-lg overflow-hidden border mb-2 premio-imagen">
+            <img 
+              v-if="editImagenPreview || (editForm.imagen && !editImagenError)" 
+              :src="editImagenPreview || editForm.imagen" 
+              alt="Imagen Premio" 
+              class="w-full h-full object-contain transition-opacity duration-300"
+              @error="handleEditImageError"
+              @load="handleEditImageLoad"
+            />
+            <div v-if="!editImagenPreview && (!editForm.imagen || editImagenError)" class="w-full h-full flex items-center justify-center">
+              <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+            </div>
+          </div>
         </div>
         <div class="flex flex-col items-center">
           <label class="block text-sm font-medium text-gray-700">Cambiar imagen</label>
@@ -219,6 +240,7 @@ const premioStore = usePremioStore()
 const terminoBusqueda = ref('')
 const mostrarDetalles = ref(false)
 const premioSeleccionado = ref(null)
+const imagenesError = ref({})
 
 // Edición
 const mostrarEdicion = ref(false)
@@ -227,6 +249,7 @@ const editForm = ref({ nombre: '', descripcion: '', categoria: '', orden: '' })
 const editError = ref('')
 const editSuccess = ref('')
 const editImagenPreview = ref('')
+const editImagenError = ref(false)
 
 // Selección múltiple
 const seleccionados = ref([])
@@ -263,6 +286,23 @@ const premiosFiltrados = computed(() => {
 })
 
 // Métodos
+const handleImageError = (premioId) => {
+  console.warn('Error al cargar imagen del premio:', premioId)
+  imagenesError.value[premioId] = true
+}
+
+const handleImageLoad = (premioId) => {
+  imagenesError.value[premioId] = false
+}
+
+const handleEditImageError = () => {
+  editImagenError.value = true
+}
+
+const handleEditImageLoad = () => {
+  editImagenError.value = false
+}
+
 const esSorteado = (premioId) => {
   return premioStore.premiosSorteados.some(sorteado => sorteado.premioId === premioId)
 }
@@ -403,5 +443,26 @@ input[type="number"],
 textarea {
   color: #111 !important;
   background: #fff;
+}
+
+/* Estilos para las imágenes de premios */
+.premio-imagen {
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.premio-imagen:hover {
+  transform: scale(1.05);
+}
+
+.premio-imagen img {
+  transition: opacity 0.3s ease;
+  backface-visibility: hidden;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+.premio-imagen img:hover {
+  opacity: 0.9;
 }
 </style> 

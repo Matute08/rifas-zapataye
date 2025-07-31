@@ -14,7 +14,7 @@ export const useSorteoStore = defineStore('sorteo', () => {
   const rifaGanadora = ref(null)
   const historialSorteos = ref([])
   const configuracion = ref({
-    duracionAnimacion: 3000,
+    duracionAnimacion: 8000, // Aumentado de 3000 a 6000ms (6 segundos)
     duracionMostrarGanador: 5000,
     sonidos: true,
     efectos: true,
@@ -99,8 +99,8 @@ export const useSorteoStore = defineStore('sorteo', () => {
         throw new Error('No hay rifas disponibles para sortear')
       }
 
-      // Simular animación de sorteo
-      await new Promise(resolve => setTimeout(resolve, configuracion.value.duracionAnimacion))
+      // Simular animación de sorteo (reducido para mostrar datos más rápido)
+      await new Promise(resolve => setTimeout(resolve, 500)) // Reducido a 500ms para que sea más rápido
 
       // Seleccionar la rifa ganadora según el número animado
       let rifaGanadoraSeleccionada = rifasDisponibles.find(r => r.numero === numeroGanadorAnimado)
@@ -108,6 +108,7 @@ export const useSorteoStore = defineStore('sorteo', () => {
       if (!rifaGanadoraSeleccionada) {
         const rifaGanadoraIndex = Math.floor(Math.random() * rifasDisponibles.length)
         rifaGanadoraSeleccionada = rifasDisponibles[rifaGanadoraIndex]
+        console.warn('Número ganador no encontrado en rifas disponibles, usando selección aleatoria como fallback')
       }
       rifaGanadora.value = rifaGanadoraSeleccionada
 
