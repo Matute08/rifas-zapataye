@@ -545,14 +545,26 @@ async function generarYGuardarPDF() {
       }
     ])
     if (insertError) {
-      alert('Error al guardar el registro en la tabla sorteos: ' + insertError.message)
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Error al guardar el registro en la tabla sorteos: ' + insertError.message
+      })
       console.error('Supabase insert error:', insertError)
       return
     }
-    alert('¡PDF del sorteo guardado exitosamente en Supabase!')
+    Swal.fire({
+      icon: 'success',
+      title: '¡Éxito!',
+      text: '¡PDF del sorteo guardado exitosamente en Supabase!'
+    })
     console.log('PDF guardado en:', pdfUrl)
   } catch (err) {
-    alert('Error inesperado al generar/guardar el PDF. Ver consola.')
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'Error inesperado al generar/guardar el PDF. Ver consola.'
+    })
     console.error('Error al generar/guardar PDF:', err)
   }
 }
