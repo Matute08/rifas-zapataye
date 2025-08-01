@@ -556,14 +556,14 @@ async function generarYGuardarPDF() {
     Swal.fire({
       icon: 'success',
       title: '¡Éxito!',
-      text: '¡PDF del sorteo guardado exitosamente en Supabase!'
+      text: '¡PDF del sorteo guardado exitosamente!'
     })
     console.log('PDF guardado en:', pdfUrl)
   } catch (err) {
     Swal.fire({
       icon: 'error',
       title: 'Error',
-      text: 'Error inesperado al generar/guardar el PDF. Ver consola.'
+      text: 'Error inesperado al generar/guardar el PDF.'
     })
     console.error('Error al generar/guardar PDF:', err)
   }
